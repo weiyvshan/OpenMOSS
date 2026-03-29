@@ -290,6 +290,42 @@ OpenMOSS/
 - Python 3.10+
 - Node.js 18+ (only needed for building the frontend; not required if `static/` directory already exists)
 
+### Docker One-Command Deployment
+
+If you don't want to install Python or Node locally, you can run OpenMOSS with Docker:
+
+```bash
+# 1. Clone the project
+ git clone https://github.com/uluckyXH/OpenMOSS/ openmoss
+ cd openmoss
+
+# 2. Build and start everything
+ docker compose up -d --build
+```
+
+After startup:
+
+- Open `http://localhost:6565`
+- First visit redirects to the **Setup Wizard**
+- The container auto-generates config at `./docker-data/config/config.yaml`
+- SQLite data is persisted in `./data/`
+- Agent workspace is mounted to `./workspace/`
+
+Useful commands:
+
+```bash
+# View logs
+ docker compose logs -f
+
+# Stop services
+ docker compose down
+
+# Rebuild after upgrade
+ docker compose up -d --build
+```
+
+> If external agents need to reach this instance, set `server.external_url` to your public URL in the setup wizard or settings page.
+
 ### Install & Run
 
 ```bash
@@ -391,6 +427,7 @@ The config file is `config.yaml` in the project root, auto-generated from `confi
 ```yaml
 # OpenMOSS Task Scheduling Middleware — Config Template
 # Copy to config.yaml and modify
+# In Docker deployments, the workspace is mounted to /workspace by default
 
 # Project name
 project:
@@ -431,7 +468,7 @@ database:
 
 # Working directory
 workspace:
-  root: "/path/to/your/workspace" # Auto-injected into agent prompts
+  root: "/workspace" # Docker default mount path; change it for non-Docker deployments
 
 # WebUI settings
 webui:

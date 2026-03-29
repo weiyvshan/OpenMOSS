@@ -311,6 +311,42 @@ OpenMOSS/
 - Python 3.10 或更高版本
 - Node.js 18 或更高版本（仅构建前端时需要，如果仓库中已有 `static/` 目录则不需要）
 
+### Docker 一键部署
+
+如果你不想手动安装 Python / Node 依赖，可以直接使用 Docker：
+
+```bash
+# 1. 克隆项目
+ git clone https://github.com/uluckyXH/OpenMOSS/ openmoss
+ cd openmoss
+
+# 2. 一键构建并启动
+ docker compose up -d --build
+```
+
+启动后：
+
+- 访问 `http://localhost:6565`
+- 首次进入会自动跳转到 **Setup Wizard**
+- 容器会自动在 `./docker-data/config/config.yaml` 生成配置文件
+- SQLite 数据保存在 `./data/`
+- Agent 工作目录挂载到 `./workspace/`
+
+常用命令：
+
+```bash
+# 查看日志
+ docker compose logs -f
+
+# 停止服务
+ docker compose down
+
+# 升级后重新构建
+ docker compose up -d --build
+```
+
+> 如果要让外部 Agent 连接这个实例，请在初始化向导或设置页中把 `server.external_url` 配置为你的公网地址。
+
 ### 安装与启动
 
 ```bash
@@ -412,6 +448,7 @@ kill $(pgrep -f "uvicorn app.main:app")
 ```yaml
 # OpenMOSS 任务调度中间件 — 配置文件模板
 # 复制此文件为 config.yaml 并修改配置
+# Docker 部署时，容器会默认将工作目录挂载到 /workspace
 
 # 项目名称
 project:
@@ -430,12 +467,10 @@ agent:
 # 通知渠道（OpenMOSS 内置消息，Agent 通过 GET /config/notification 获取后自行发送）
 notification:
   enabled: true # 记得打开，否则AGgent不会通知
-  # 目标渠道：格式为 渠道类型:目标ID
   channels: []
     # - "chat:oc_1f99abbba2bf0f8733377893d976ffa5"   # 飞书群（把 Agent 拉进群/艾特一次即可获取 chat_id）
     # - "user:ou_xxxxxxxxxxxxxxxxxxxxxxxxxxxx"        # 飞书私聊（open_id）
     # - “xxx@gmail.com” # 当然你的Agent要具备发邮件的功能
-  # 触发通知的事件类型
   events:
     - task_completed # 子任务完成时通知
     - review_rejected # 审查驳回（返工）时通知
@@ -455,7 +490,7 @@ database:
 
 # 工作目录
 workspace:
-  root: "/home/your-user/TaskWork"  # Agent 的工作目录，会自动替换到全局提示词中，告诉 Agent 产出的结果该放在哪
+  root: "/workspace"  # Docker 默认挂载目录；非 Docker 部署请改成你的实际路径
 
 # WebUI 配置
 webui:

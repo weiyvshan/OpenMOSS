@@ -1,0 +1,15 @@
+services:
+  openmoss:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: openmoss
+    ports:
+      - "6565:6565"
+    environment:
+      OPENMOSS_CONFIG: /data/config/config.yaml
+    volumes:
+      - ./data:/app/data
+      - ./docker-data/config:/data/config
+      - ./workspace:/workspace
+    restart: unless-stopped

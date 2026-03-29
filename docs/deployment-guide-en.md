@@ -240,6 +240,48 @@ What each role does:
 
 ## 5. Start Deploying
 
+### Option A: Docker One-Command Deployment (Recommended)
+
+If you want to get OpenMOSS running quickly, the simplest path is Docker Compose:
+
+```bash
+# Clone the repository
+git clone https://github.com/uluckyXH/OpenMOSS/ openmoss
+cd openmoss
+
+# Build and start everything
+docker compose up -d --build
+```
+
+After startup:
+
+1. Open `http://localhost:6565`
+2. On first visit you'll be redirected to the setup wizard
+3. After initialization you can sign in to the admin panel
+
+Default persisted paths in the Docker setup:
+
+- `./docker-data/config/config.yaml` — config file, auto-generated on first container start
+- `./data/` — SQLite database
+- `./workspace/` — agent workspace
+
+Useful commands:
+
+```bash
+# View logs
+docker compose logs -f
+
+# Stop containers
+docker compose down
+
+# Rebuild after pulling updates
+docker compose up -d --build
+```
+
+> If your agents need to access OpenMOSS from outside the host, set `server.external_url` in the setup wizard or settings page.
+
+### Option B: Manual Deployment
+
 > ⚠️ Follow these steps in order — don't skip any.
 
 ### Step 1: Start the OpenMOSS Server

@@ -12,8 +12,9 @@ from typing import Optional
 class AppConfig:
     """应用配置"""
 
-    def __init__(self, config_path: str = "config.yaml"):
-        self.config_path = Path(config_path)
+    def __init__(self, config_path: Optional[str] = None):
+        resolved_config_path = config_path or os.getenv("OPENMOSS_CONFIG") or "config.yaml"
+        self.config_path = Path(resolved_config_path)
         self._data = {}
         self._lock = threading.RLock()  # 可重入锁，防止内部方法嵌套调用时死锁
         self.load()
@@ -25,6 +26,7 @@ class AppConfig:
             example_path = Path("config.example.yaml")
             if example_path.exists():
                 import shutil
+                self.config_path.parent.mkdir(parents=True, exist_ok=True)
                 shutil.copy(example_path, self.config_path)
                 print(f"[Config] 已从 {example_path} 创建配置文件 {self.config_path}")
             else:

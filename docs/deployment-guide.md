@@ -239,6 +239,48 @@ skills/
 
 ## 5. 开始部署
 
+### 方案 A：Docker 一键部署（推荐）
+
+如果你只是想尽快把 OpenMOSS 跑起来，最简单的方式就是直接使用 Docker Compose：
+
+```bash
+# 克隆仓库
+git clone https://github.com/uluckyXH/OpenMOSS/ openmoss
+cd openmoss
+
+# 一键构建并启动
+docker compose up -d --build
+```
+
+启动完成后：
+
+1. 打开 `http://localhost:6565`
+2. 首次访问会自动跳转到初始化向导
+3. 初始化完成后即可进入登录页和管理后台
+
+Docker 方案的默认持久化目录：
+
+- `./docker-data/config/config.yaml` — 配置文件（容器首次启动时自动生成）
+- `./data/` — SQLite 数据库
+- `./workspace/` — Agent 工作目录
+
+常用命令：
+
+```bash
+# 查看运行日志
+docker compose logs -f
+
+# 停止容器
+docker compose down
+
+# 拉取新代码后重新构建
+ docker compose up -d --build
+```
+
+> 如果你的 Agent 需要从公网访问 OpenMOSS，请在初始化向导或设置页中填写 `server.external_url`。
+
+### 方案 B：手动部署
+
 > ⚠️ 请按顺序执行以下步骤，不要跳步。
 
 ### 第 1 步：启动 OpenMOSS 服务

@@ -1,5 +1,6 @@
 # OpenMOSS 任务调度中间件 — 配置文件模板
 # 复制此文件为 config.yaml 并修改配置
+# Docker 部署时，容器会默认将工作目录挂载到 /workspace
 
 # 项目名称
 project:
@@ -41,7 +42,7 @@ database:
 
 # 工作目录
 workspace:
-  root: "/home/your-user/TaskWork"
+  root: "/workspace"
 
 # WebUI 配置
 webui:
